@@ -1,8 +1,7 @@
 package dk.cphbusiness.soft.sqlinject;
 
-import static dk.cphbusiness.soft.sqlinject.PlaceHolders.field;
 import static dk.cphbusiness.soft.sqlinject.PlaceHolders.string;
-import static dk.cphbusiness.soft.sqlinject.PlaceHolders.stringList;
+import static dk.cphbusiness.soft.sqlinject.PlaceHolders.field;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -13,30 +12,34 @@ import java.sql.Statement;
 public class AppMain {
 
     public static void main( String[] args ) throws SQLException, ClassNotFoundException {
-        try {
-          String id = "2 or 1=1"; 
-          String name = "Jens' or ''='"; 
-          injectSimpleStatement( id, name );
-          injectPreparedStatement( id, name );
-          }
-        catch (Exception e) { e.printStackTrace(); }
+        //String id = "2"; 
+        //String name = "Jens"; 
+        String id = "7 or 1 = 1; --";
+        //String id = "2";
         
+        String name = "Jens";
+                
+        injectSimpleStatement( id, name );
+        injectPreparedStatement( id, name );
     }
-    
-    private static void sortExample(String sortKey) {
-      String sql = "select * from junk order by "+field("name", "id")+";";
-      }
-    
-    private static void inExample(String... options) {
-      String sql = "select * from junk where name in "+stringList(options)+";";
-      }
 
+    
+    
     private static void injectSimpleStatement( String id, String name ) throws SQLException, ClassNotFoundException {
+        String[] whitelist = {"Jens", "Gurli", "Hans", "1", "2", "3"};
+                
         System.out.println( "Simple inject" );
         try ( Connection con = getConnection();
                 Statement stmt = con.createStatement();
                 ResultSet rs = stmt.executeQuery(
-                        "SELECT * FROM junk WHERE id=" + id + " and name ='" + string(name) + "'" ) ) {
+                        // Denne giver problemer ift sql injections
+                         "SELECT * FROM junk WHERE id=" + id + " and name ='" + name + "'" ) ) {
+                        
+                        //Escape '
+                        //"SELECT * FROM junk WHERE id=" + string(id) + " and name ='" + string(name) + "'" ) ) {
+                        
+                        // Whitelist eksempel dog på brugernave i stedet for tabeller.
+                       //"SELECT * FROM junk WHERE id=" + field(id, whitelist) + " and name ='" + field(name, whitelist) + "'" ) ) {
             while ( rs.next() ) {
                 System.out.println( "--> " + rs.getInt( "id" )
                         + " " + rs.getString( "name" )
@@ -45,6 +48,7 @@ public class AppMain {
         }
     }
 
+    // Prepared statement er gode iforhold til sql at undgå injections.
     private static void injectPreparedStatement( String id, String name ) throws SQLException, ClassNotFoundException {
         System.out.println( "Prepared statement" );
         try ( Connection con = getConnection();
@@ -58,12 +62,12 @@ public class AppMain {
                         + " " + rs.getString( "role" ) );
             }
         }
-
     }
 
     private static Connection getConnection() throws SQLException, ClassNotFoundException {
         Class.forName( "org.sqlite.JDBC" );
-        String path = "/Users/AKA/DatSoftLyngby/SecurityFall2018/week2SQLinject/tmpinject.db";
+                       // C:\\Users\\Bo\\security\\hackingExercies\\Week-4-SQLInject\\tmpinject.db
+        String path = "/Users/Bo/security/hackingExercies/Week-4-SQLInject/tmpinject.db";
         return DriverManager.getConnection( "jdbc:sqlite:" + path );
     }
 

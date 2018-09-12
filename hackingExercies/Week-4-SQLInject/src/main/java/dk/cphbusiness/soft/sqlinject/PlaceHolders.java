@@ -1,40 +1,43 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package dk.cphbusiness.soft.sqlinject;
 
-import static java.lang.String.join;
-import java.util.stream.Stream;
-
+/**
+ *
+ * @author Bo
+ */
 public class PlaceHolders {
-  
-  public static String field(String name, String... whitelist) {
-    for (String option : whitelist) {
-      if(option.equals(name))
-        return name;
-      }
-    throw new IllegalArgumentException("Bad input bro...");
+    
+    // De 3 metoder viser primatize forespørgsel
+    //Ved hvad tabel navnet skal være
+    public static String field(String name, String... whitelist) { //string... betyder kommer ind som array.
+        //System.out.println(whitelist[0]);
+        
+        for (String option : whitelist) { //Denne virker også på collections. Er det samme som for loop.
+            if(name.equals(option))
+                return name;
+        }
+        
+        // ved runtime exceptin behøver man ikke skrive throws
+        throw new IllegalArgumentException("Bad input...");
     }
-  
-  public static String string(String value) {
-    // TODO: Implement!!!
-    return "'"+value+"'";
+    //
+    // Skal escape ' (tics)
+    public static String string(String value) {
+        return value.replace("'", "\'");
     }
-  
-  public static String stringList(String... values) {
-    // First attempt, does not use "string(...)"
-    // return "('"+join("','",values)+"')";
-    String result = "";
-    for (String value : values) {
-      if (result.isEmpty()) result = string(value);
-      else result += ", "+string(value);
-      }
-    return "("+result+")";
+    
+    // Formater input.
+    public static String stringList2(String... values) {
+        String result = ""; // Første gang den kører er den tom. Derefter først value. Tilføjer komma. Næste value osv.
+        for (String value : values) {
+            if(result.isEmpty()) result = string(value); // 
+            else result += ", " + string(value);
+        }
+        return "(" + result + ")";
     }
-  
-  public static String integer(String value) {
-    throw new UnsupportedOperationException("No support");
-    }
-  
-  public static String integerList(String... values) {
-    throw new UnsupportedOperationException("No support");
-    }
-  
-  }
+    
+}
