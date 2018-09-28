@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+    <session-config>
+        <session-timeout>
+            30
+        </session-timeout>
+    </session-config>
+    
+    <security-constraint>
+        <web-resource-collection>adminpages</web-resource-collection>
+        <url-pattern>/admin.html</url-pattern>
+    </security-constraint>
+    
+        <security-constraint>
+        <web-resource-collection>userpages</web-resource-collection>
+        <url-pattern>/user.html</url-pattern>
+    </security-constraint>
+    
+    <auth-constraint>
+        <description>Administrator url</description>
+        <role-name>admin</role-name>
+    </auth-constraint>
+    
+    <auth-constraint>
+        <description>Administrator url</description>
+        <role-name>admin</role-name>
+    </auth-constraint>
+    
+</web-app>

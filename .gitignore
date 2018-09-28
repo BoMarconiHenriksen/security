@@ -42,3 +42,6 @@ nbdist/
 
 
 # End of https://www.gitignore.io/api/java,netbeans,visualstudiocode
+/exercises/securityEx1/nbproject/private/
+/exercises/week6/target/
+/exercises/week6Authentication/target/
